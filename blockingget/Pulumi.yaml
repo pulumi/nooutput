@@ -1,0 +1,3 @@
+name: simplego
+runtime: go
+description: A minimal AWS Go Pulumi program

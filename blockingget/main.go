@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"simplego/pulumi"
 	"simplego/s3"
 )
@@ -27,14 +28,12 @@ func main() {
 			return err
 		}
 
-		// We can just concatenate the strings!
-		ctx.Export("url", "http://"+bucket.WebsiteEndpoint())
+		url := "http://" + bucket.WebsiteEndpoint()
+		fmt.Printf("%s\n", url)
 
-		// And if we *really* want to Apply (to be able to do anything we can express in Pulumi today),
-		// we still can
-		ctx.Export("url2", pulumi.Apply(bucket.WebsiteEndpoint(), func(endpoint string) string {
-			return "http://" + endpoint
-		}))
+		// We can just concatenate the strings!
+		pulumi.Printf("url %s", url)
+		ctx.Export("url", url)
 		return nil
 	})
 }
