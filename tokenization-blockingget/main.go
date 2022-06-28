@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"simplego/pulumi"
 	"simplego/s3"
 )
@@ -28,6 +29,8 @@ func main() {
 				return err
 			}
 		}
+
+		fmt.Printf("Bucket website endpoint is: %s\n", bucket.WebsiteEndpoint())
 
 		// We can just concatenate the strings!
 		ctx.Export("url", "http://"+bucket.WebsiteEndpoint())
