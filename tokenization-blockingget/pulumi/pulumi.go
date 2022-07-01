@@ -92,3 +92,9 @@ func Apply(token string, callback func(s string) string) string {
 	output := input.ApplyT(callback).(p.StringOutput)
 	return OutputToToken(output)
 }
+
+type StringMap p.StringMapOutput
+
+func (o StringMap) Lookup(s string) string {
+	return OutputToToken(p.StringMapOutput(o).MapIndex(p.String(s)))
+}

@@ -12,6 +12,9 @@ func main() {
 				// Pass a plain *string in!
 				IndexDocument: pulumi.Ptr("index.html"),
 			},
+			Tags: map[string]string{
+				"Owner": "lukehoban",
+			},
 		})
 		if err != nil {
 			return err
@@ -37,6 +40,9 @@ func main() {
 		ctx.Export("url2", pulumi.Apply(bucket.WebsiteEndpoint(), func(endpoint string) string {
 			return "http://" + endpoint
 		}))
+
+		// Object valued outputs need to use `Lookup`
+		ctx.Export("bucketOwner", bucket.TagsAll().Lookup("Owner"))
 		return nil
 	})
 }

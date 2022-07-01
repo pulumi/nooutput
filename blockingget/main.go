@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"simplego/pulumi"
 	"simplego/s3"
 )
@@ -29,7 +28,6 @@ func main() {
 		}
 
 		url := "http://" + bucket.WebsiteEndpoint()
-		fmt.Printf("%s\n", url)
 
 		// We can just concatenate the strings!
 		pulumi.Printf("url %s", url)

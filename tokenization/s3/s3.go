@@ -19,24 +19,38 @@ func (b *Bucket) Bucket() string {
 	return pulumi.OutputToToken(b.inner.Bucket)
 }
 
+func (b *Bucket) TagsAll() pulumi.StringMap {
+	return pulumi.StringMap(b.inner.TagsAll)
+}
+
 type BucketWebsiteArgs struct {
 	IndexDocument *string
 }
 
 type BucketArgs struct {
 	Website *BucketWebsiteArgs
+	Tags    map[string]string
 }
 
-func NewBucket(ctx *pulumi.Context,
-	name string, args *BucketArgs, opts ...p.ResourceOption) (*Bucket, error) {
+func NewBucket(ctx *pulumi.Context, name string, args *BucketArgs, opts ...p.ResourceOption) (*Bucket, error) {
 	if args == nil {
 		args = &BucketArgs{}
+	}
+
+	// TODO: Does this need to be able to accept a token representation of a whole map?
+	var tags map[string]p.StringOutput
+	if args.Tags != nil {
+		tags = map[string]p.StringOutput{}
+		for k, v := range args.Tags {
+			tags[k] = pulumi.TokenToInput(v).ToStringOutput()
+		}
 	}
 
 	innerArgs := s3.BucketArgs{
 		Website: &s3.BucketWebsiteArgs{
 			IndexDocument: pulumi.PtrTokenToInput(args.Website.IndexDocument),
 		},
+		Tags: p.ToStringMapOutput(tags),
 	}
 
 	var resource Bucket

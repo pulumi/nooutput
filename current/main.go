@@ -12,6 +12,10 @@ func main() {
 				// Wrap a string into a pulumi.StringOutput (which implents pulumi.StringInput)
 				IndexDocument: pulumi.String("index.html"),
 			},
+			// Must know to use `pulumi.StringMap` and other complex object wrappers
+			Tags: pulumi.StringMap{
+				"Owner": pulumi.String("lukehoban"),
+			},
 		})
 		if err != nil {
 			return err
@@ -31,9 +35,13 @@ func main() {
 		// 1. Know to use special `pulumi.Sprintf`
 		// 2. Use the more fundamental ApplyT
 		ctx.Export("url", pulumi.Sprintf("http://%s", bucket.WebsiteEndpoint))
-		// ctx.Export("url2", bucket.WebsiteEndpoint.ApplyT(func(s string) string {
-		// 	return "http://" + s
-		// }).(pulumi.StringOutput))
+
+		ctx.Export("url2", bucket.WebsiteEndpoint.ApplyT(func(s string) string {
+			return "http://" + s
+		}).(pulumi.StringOutput))
+
+		// Object valued outputs need to use `MapIndex` to lookup (or Apply)
+		ctx.Export("bucketOwner", bucket.TagsAll.MapIndex(pulumi.String("Owner")))
 		return nil
 	})
 }

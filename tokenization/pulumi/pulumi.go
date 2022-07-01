@@ -70,3 +70,9 @@ func Ptr[T any](x T) *T {
 func Apply(token string, callback func(s string) string) string {
 	return OutputToToken(TokenToInput(token).ToStringOutput().ApplyT(callback).(p.StringOutput))
 }
+
+type StringMap p.StringMapOutput
+
+func (o StringMap) Lookup(s string) string {
+	return OutputToToken(p.StringMapOutput(o).MapIndex(p.String(s)))
+}
